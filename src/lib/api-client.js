@@ -1,6 +1,6 @@
-const { HOST } = require("@/utils/constants");
-const { default: axios } = require("axios");
+import { HOST } from '@/utils/constants'
+import axios from 'axios'
 
-const apiClient = axios.create({
-    baseURL:HOST
+export const apiClient = axios.create({
+    baseURL:HOST,
 })
