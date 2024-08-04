@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { SIGNUP_ROUTE } from "@/utils/constants";
+import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
+import {useNavigate}  from "react-router-dom";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate()
 
   const validateSignup = () => {
     if (!email.length) {
@@ -29,11 +31,38 @@ const Auth = () => {
     return true;
   };
 
-  const handleLogin = async () => {};
+  const validateLogin = () => {
+    if (!email.length) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!password.length) {
+      toast.error("Password is required");
+      return false;
+    }
+    return true;
+  };
+
+  const handleLogin = async () => {
+    if(validateLogin()) {
+      const response = await apiClient.post(LOGIN_ROUTE,{email,password})
+      console.log(response.data.user.ProfileSetup);
+      
+      if(response.data.user._id){
+        if(response.data.user.ProfileSetup){
+          navigate('/profile')
+        }
+      }
+      // console.log(response)
+    }
+  };
+  
   const handleSignup = async () => {
     if (validateSignup()) {
       const response = await apiClient.post(SIGNUP_ROUTE,{email,password})
-      console.log(response)
+      if(response.status === 201){
+        navigate('/profile')
+      }
     }
   };
 
@@ -51,7 +80,7 @@ const Auth = () => {
             </p>
           </div>
           <div className="flex items-center justify-center w-full">
-            <Tabs className="w-3/4">
+            <Tabs defaultValue="login" className="w-3/4">
               <TabsList className="bg-transparent rounded-none w-full">
                 <TabsTrigger
                   className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:border-b-purple-500 p-3 transition-all duration-300 "
