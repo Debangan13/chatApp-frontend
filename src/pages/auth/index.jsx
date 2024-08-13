@@ -48,9 +48,9 @@ const Auth = () => {
   const handleLogin = async () => {
     if(validateLogin()) {
       const response = await apiClient.post(LOGIN_ROUTE,{email,password})
-      console.log(response.data.user);
       
       if(response.data.user._id){
+        console.log("helo");
         console.log(response.data.user.profileSetup)
         setUserInfo(response.data.user)
       }
