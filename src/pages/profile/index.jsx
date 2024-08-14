@@ -8,7 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { UPDATE_PROFILE_ROUTE } from "@/utils/constants";
+import {
+	REMOVE_PROFILE_IMAGE,
+	UPDATE_PROFILE_ROUTE,
+	UPLOAD_PROFILE_IMAGE,
+} from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -22,11 +26,21 @@ const Profile = () => {
 	const fileInputRef = useRef(null);
 
 	useEffect(() => {
-		const { profileSetup, firstName, lastName, color } = userInfo;
+		const {
+			profileSetup,
+			firstName,
+			lastName,
+			color,
+			image: profileImage,
+		} = userInfo;
 		if (profileSetup) {
 			setFirstName(firstName);
 			setLastName(lastName);
 			setSelectedColor(color);
+			console.log("profileImage:", profileImage);
+			if (profileImage) {
+				setImage(profileImage);
+			}
 		}
 	}, [userInfo]);
 
@@ -43,6 +57,8 @@ const Profile = () => {
 	};
 	const saveChanges = async () => {
 		if (validateProfile()) {
+			console.log("image:", typeof image);
+			console.log("image:", image);
 			try {
 				const response = await apiClient.post(UPDATE_PROFILE_ROUTE, {
 					firstName,
@@ -71,10 +87,57 @@ const Profile = () => {
 		fileInputRef.current.click();
 	};
 	const handledImageChange = async (e) => {
-		const file = e.target.files[0]
-		
+		const file = e.target.files[0];
+		if (file) {
+			try {
+				const formData = new FormData();
+				formData.append("file", file);
+				formData.append("upload_preset", "upload_image"); // replace with your actual preset
+				formData.append("cloud_name", "duckmy6re");
+				// uploading the ProfileImage to cloudinary
+				const response = await apiClient.post(
+					`https://api.cloudinary.com/v1_1/duckmy6re/image/upload`,
+					formData,
+					{ withCredentials: false }
+				);
+				console.log(response.data);
+				const profileImageUrl = response.data.secure_url;
+
+				profileImageUrl
+					? setImage(profileImageUrl)
+					: console.error("upload falied:", data);
+				// uploading the profileimage to the backend
+				const uploadImage = await apiClient.post(UPLOAD_PROFILE_IMAGE, {
+					image: profileImageUrl
+				});
+				if (uploadImage.status === 200 && uploadImage.data.user.image) {
+					setUserInfo({
+						...userInfo,
+						image: profileImageUrl,
+						publicID: response.data.public_id,
+					});
+					toast.success("Image uploaded successfully");
+				}
+			} catch (error) {
+				console.error("Error uploading image:", error);
+			}
+		}
 	};
-	const handledDeleteImage = async () => {};
+	const handledDeleteImage = async () => {
+		try {
+			const publicID =userInfo.publicID 
+			const response = await apiClient.delete(REMOVE_PROFILE_IMAGE, {
+				data:{publicID} ,
+			});
+			if (response.status === 200) {
+				setUserInfo({ ...userInfo, image: null });
+				toast.success("Image removed successfully");
+				setImage(null);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return (
 		<div className='bg-[#1b1c24] h-[100vh] flex items-center justify-center flex-col gap-10 '>
