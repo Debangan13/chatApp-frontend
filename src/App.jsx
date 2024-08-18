@@ -56,8 +56,7 @@ const App = () => {
 			try {
 				console.log("Fetching user data...");
 				const response = await apiClient.get(GET_USER_INFO);
-				console.log("Response received");
-				console.log(response)
+				console.log("Response received");		
 				if (response.status === 200 && response.data.id) {
 					console.log("User data fetched successfully");
 					setUserInfo(response.data);
@@ -83,7 +82,7 @@ const App = () => {
 		}
 		console.log("userInfo", !userInfo);
 	}, [userInfo, setUserInfo]);
-
+	console.log("loading:",loading)
 	if (loading) {
 		return <div>Loading....</div>;
 	}
