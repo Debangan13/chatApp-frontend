@@ -37,7 +37,6 @@ const Profile = () => {
 			setFirstName(firstName);
 			setLastName(lastName);
 			setSelectedColor(color);
-			console.log("profileImage:", profileImage);
 			if (profileImage) {
 				setImage(profileImage);
 			}
@@ -57,16 +56,17 @@ const Profile = () => {
 	};
 	const saveChanges = async () => {
 		if (validateProfile()) {
-			console.log("image:", typeof image);
-			console.log("image:", image);
 			try {
 				const response = await apiClient.post(UPDATE_PROFILE_ROUTE, {
 					firstName,
 					lastName,
 					color: selectedColor,
 				});
+				console.log("RESPONSE",response.data.user)
 				if (response.status === 200 && response.data.user) {
-					setUserInfo({ ...response.data.user });
+					// setUserInfo({ ...response.data.user });
+					setUserInfo({ ...userInfo, profileSetup: true, firstName, lastName, color: selectedColor, image });
+  
 					toast.success("Profile updated successfully");
 					navigate("/chat");
 				}
@@ -94,13 +94,13 @@ const Profile = () => {
 				formData.append("file", file);
 				formData.append("upload_preset", "upload_image"); // replace with your actual preset
 				formData.append("cloud_name", "duckmy6re");
+				formData.append("folder", "profileImage");
 				// uploading the ProfileImage to cloudinary
 				const response = await apiClient.post(
 					`https://api.cloudinary.com/v1_1/duckmy6re/image/upload`,
 					formData,
 					{ withCredentials: false }
 				);
-				console.log(response.data);
 				const profileImageUrl = response.data.secure_url;
 
 				profileImageUrl
@@ -127,7 +127,7 @@ const Profile = () => {
 		try {
 			const publicID =userInfo.publicID 
 			const response = await apiClient.delete(REMOVE_PROFILE_IMAGE, {
-				data:{publicID} ,
+				data:{publicID} 
 			});
 			if (response.status === 200) {
 				setUserInfo({ ...userInfo, image: null });

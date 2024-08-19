@@ -56,7 +56,7 @@ const App = () => {
 			try {
 				console.log("Fetching user data...");
 				const response = await apiClient.get(GET_USER_INFO);
-				console.log("Response received");		
+				console.log("Response received",response);
 				if (response.status === 200 && response.data.id) {
 					console.log("User data fetched successfully");
 					setUserInfo(response.data);
@@ -80,7 +80,6 @@ const App = () => {
 			console.log("User info already exists");
 			setLoading(false);
 		}
-		console.log("userInfo", !userInfo);
 	}, [userInfo, setUserInfo]);
 	console.log("loading:",loading)
 	if (loading) {
@@ -92,8 +91,8 @@ const App = () => {
 			<Routes>
 				{/* Private Routes */}
 				<Route element={<PrivateRoutes />}>
-					<Route path='/chat' element={<Chat />} />
 					<Route path='/profile' element={<Profile />} />
+					<Route path='/chat' element={<Chat />} />
 				</Route>
 
 				{/* Public Routes */}
