@@ -5,10 +5,13 @@ import { useAppStore } from "@/store";
 import ContactsContainer from "./components/contacts-container";
 import EmptyChatConatiner from "./components/empty-chat-container";
 import ChatContainer from "./components/chat-container";
+import { apiClient } from "@/lib/api-client";
+import { GET_USER_INFO } from "@/utils/constants";
 
 const Chat = () => {
  const {userInfo} = useAppStore()
   const navigate = useNavigate()
+   
   useEffect(()=> {
     if(!userInfo.profileSetup){
       toast.error("Please setup profile to continue.")
@@ -19,7 +22,7 @@ const Chat = () => {
     <div className="flex h-[100vh] text-white overflow-hidden ">
       <ContactsContainer/>
       {/* <EmptyChatConatiner/> */}
-      <ChatContainer/>
+      {/* <ChatContainer/> */}
     </div>
   )
 }

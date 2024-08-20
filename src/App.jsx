@@ -16,8 +16,12 @@ import { GET_USER_INFO } from "./utils/constants";
 
 const PublicRoutes = () => {
 	const { userInfo } = useAppStore();
+	console.log("App.jsx::",userInfo)
 	const isAuthenticated = !!userInfo;
 	const location = useLocation();
+	console.log("pathename",location.pathname)
+	console.log("auth",isAuthenticated)
+
 	return isAuthenticated && location.pathname === "/auth" ? (
 		userInfo.profileSetup ? (
 			<Navigate to='/chat' />
@@ -27,7 +31,6 @@ const PublicRoutes = () => {
 	) : (
 		<Outlet />
 	);
-	// return isAuthenticated ? <Outlet /> : <Navigate to="/chat" />;0
 };
 
 const PrivateRoutes = () => {
@@ -42,15 +45,6 @@ const App = () => {
 
 	useEffect(() => {
 		console.log("useEffect started");
-
-    // const getUserData = async () => {
-    //   try {
-    //     const response = await apiClient.get(GET_USER_INFO)
-    //     console.log(response)
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
 
 		const getUserData = async () => {
 			try {

@@ -1,6 +1,8 @@
 import React from "react";
 import { Logo } from "./svg/Logo";
 import Title from "./Title/Title";
+import ProfileInfo from "./component/profile-info";
+import NewDM from "./component/new-dm";
 
 const ContactsContainer = () => {
 	return (
@@ -11,6 +13,7 @@ const ContactsContainer = () => {
             <div className="my-5">
                 <div className="flex items-center justify-between pr-10">
                     <Title text="Direct Messages"/>
+                    <NewDM/>
                 </div>
             </div>
             <div className="my-5">
@@ -18,6 +21,7 @@ const ContactsContainer = () => {
                     <Title text="channels"/>
                 </div>
             </div>
+            <ProfileInfo/>
 		</div>
 	);
 };
