@@ -3,28 +3,31 @@ import { GrAttachment } from "react-icons/gr";
 import { IoSend } from "react-icons/io5";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import EmojiPicker from "emoji-picker-react";
+import { io } from "socket.io-client";
 
 const MessageBar = () => {
 	const [message, setMessage] = useState("");
 	const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
 	const emojiRef = useRef();
 
-  useEffect(()=> {
-    const handledClickOuside = (e)=> {
-      if(emojiRef.current && !emojiRef.current.contains(e.target)){
-        setEmojiPickerOpen(false)
-      }
-    }
-    document.addEventListener('mousedown',handledClickOuside)
-    return () => {document.removeEventListener('mousedown',handledClickOuside)}
-  },[emojiRef])
+	useEffect(() => {
+		const handledClickOuside = (e) => {
+			if (emojiRef.current && !emojiRef.current.contains(e.target)) {
+				setEmojiPickerOpen(false);
+			}
+		};
+		document.addEventListener("mousedown", handledClickOuside);
+		return () => {
+			document.removeEventListener("mousedown", handledClickOuside);
+		};
+	}, [emojiRef]);
 
 	const handledAddEmoji = (emoji) => {
 		setMessage((msg) => msg + emoji.emoji);
 	};
 
 	const handledSendMessage = () => {
-		console.log(message);
+		
 	};
 
 	return (
@@ -44,13 +47,16 @@ const MessageBar = () => {
 					<button
 						className='text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-400 transition-all'
 						onClick={() => setEmojiPickerOpen(true)}
-            
 					>
 						<RiEmojiStickerLine />
 					</button>
 					<div className='absolute bottom-16 right-0' ref={emojiRef}>
-						<EmojiPicker  theme='dark' open={emojiPickerOpen} onEmojiClick={handledAddEmoji}
-            autoFocusSearch={false} />
+						<EmojiPicker
+							theme='dark'
+							open={emojiPickerOpen}
+							onEmojiClick={handledAddEmoji}
+							autoFocusSearch={false}
+						/>
 					</div>
 				</div>
 			</div>
