@@ -25,9 +25,9 @@ const NewDM = () => {
 	const [opneNewContactModal, setopneNewContactModal] = useState(false);
 	const { setSelectedChatType, setSelectedChatData } = useAppStore();
 	const [searchedContact, setSearchedContact] = useState([]);
-	console.log("SearchedContact::", searchedContact);
 
 	const selectNewContact = (contact) => {
+		console.log("contact",contact)
 		setopneNewContactModal(false);
 		setSelectedChatType("contact");
 		setSelectedChatData(contact);
