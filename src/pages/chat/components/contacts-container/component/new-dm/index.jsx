@@ -19,30 +19,31 @@ import { ainmationDefaultOptions, getColor } from "@/lib/utils";
 import { apiClient } from "@/lib/api-client";
 import { SEARCH_CONTACTS_ROUTE } from "@/utils/constants";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useAppStore } from "@/store";
 
 const NewDM = () => {
 	const [opneNewContactModal, setopneNewContactModal] = useState(false);
+	const { setSelectedChatType, setSelectedChatData } = useAppStore();
 	const [searchedContact, setSearchedContact] = useState([]);
 	console.log("SearchedContact::", searchedContact);
 
 	const selectNewContact = (contact) => {
-		setopneNewContactModal(false)
-		setSearchedContact([])
-	}
+		setopneNewContactModal(false);
+		setSelectedChatType("contact");
+		setSelectedChatData(contact);
+		setSearchedContact([]);
+	};
 
 	const searchContact = async (searchTerm) => {
 		try {
-			console.log("length", searchTerm.length);
 			if (searchTerm.length > 0) {
 				const response = await apiClient.post(SEARCH_CONTACTS_ROUTE, {
 					searchTerm,
 				});
 
 				if (response.status === 200 && response.data.contacts) {
-					console.log("in");
 					setSearchedContact(response.data.contacts);
 				}
-				console.log("SEARCHRESPONSE:::", response.data.contacts);
 			} else {
 				setSearchedContact([]);
 			}
@@ -87,51 +88,54 @@ const NewDM = () => {
 						className='rounded-lg p-6 bg-[#2c2e3b] border-none '
 						onChange={(e) => searchContactDebounced(e.target.value)}
 					/>
-					<ScrollArea className='h-[250px] w-full '>
-						<div className='flex flex-col gap-5 '>
-							{searchedContact.map((contact) => {
-								const { image, firstName, lastName, email, color, _id } =
-									contact;
-								return (
-									<div
-										key={_id}
-										className='flex items-center gap-3 cursor-pointer'
-										onClick={()=> selectNewContact(contact)}
-									>
-										<div className='w-12 h-12 relative'>
-											<Avatar className='h-12 w-12 rounded-full overflow-hidden'>
-												{image ? (
-													<AvatarImage
-														src={image}
-														alt='profile'
-														className='object-cover w-full h-full bg-black'
-													/>
-												) : (
-													<div
-														className={`uppercase h-12 w-12 text-5xl border-[1px] flex items-center justify-center rounded-full ${getColor(
-															color
-														)} `}
-													>
-														{firstName
-															? firstName.split("").shift()
-															: email.split("").shift()}
-													</div>
-												)}
-											</Avatar>
+					{searchedContact.length > 0 && (
+						<ScrollArea className='h-[250px] w-full '>
+							<div className='flex flex-col gap-5 '>
+								{searchedContact.map((contact) => {
+									const { image, firstName, lastName, email, color, _id } =
+										contact;
+									return (
+										<div
+											key={_id}
+											className='flex items-center gap-3 cursor-pointer'
+											onClick={() => selectNewContact(contact)}
+										>
+											<div className='w-12 h-12 relative'>
+												<Avatar className='h-12 w-12 rounded-full overflow-hidden'>
+													{image ? (
+														<AvatarImage
+															src={image}
+															alt='profile'
+															className='object-cover w-full h-full bg-black'
+														/>
+													) : (
+														<div
+															className={`uppercase h-12 w-12 text-5xl border-[1px] flex items-center justify-center rounded-full ${getColor(
+																color
+															)} `}
+														>
+															{firstName
+																? firstName.split("").shift()
+																: email.split("").shift()}
+														</div>
+													)}
+												</Avatar>
+											</div>
+											<div className='flex flex-col'>
+												<span>
+													{firstName && lastName
+														? `${firstName} ${lastName}`
+														: ""}
+												</span>
+												<span className='text-xs'>{email}</span>
+											</div>
 										</div>
-										<div className='flex flex-col'>
-											<span>
-												{firstName && lastName
-													? `${firstName} ${lastName}`
-													: ""}
-											</span>
-											<span className='text-xs'>{email}</span>
-										</div>
-									</div>
-								);
-							})}
-						</div>
-					</ScrollArea>
+									);
+								})}
+							</div>
+						</ScrollArea>
+					)}
+
 					{searchedContact.length <= 0 && (
 						<div className=''>
 							<div className='flex-1 mt-5 md:flex flex-col justify-center items-center duration-1000 transition-all '>
