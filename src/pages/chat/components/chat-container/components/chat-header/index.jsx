@@ -7,6 +7,7 @@ import { RiCloseFill } from "react-icons/ri";
 const ChatHeader = () => {
 	const { closeChat, selectedChatData, selectedChatType } = useAppStore();
 	const { image, firstName, lastName, email, color } = selectedChatData;
+	console.log(selectedChatData)
 	return (
 		<div className='h-[10vh] border-b-2 border-[#2f303b] flex items-center justify-between '>
 			<div className='flex gap-5 items-center w-full justify-between'>

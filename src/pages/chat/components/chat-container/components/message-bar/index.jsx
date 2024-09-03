@@ -10,6 +10,7 @@ const MessageBar = () => {
 	const [message, setMessage] = useState("");
 	const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
 	const emojiRef = useRef();
+	const fileInputRef = useRef()
 	const {selectedChatType,selectedChatData,userInfo}=useAppStore()
 	const socket = useSocket()
 
@@ -42,6 +43,12 @@ const MessageBar = () => {
 		}
 	};
 
+	const handledAttachmentClick = () => {
+		if(fileInputRef.current){
+			fileInputRef.current.click()
+		}
+	}
+
 	return (
 		<div className='h-[10vh] bg-[#1d1d25] flex justify-center items-center px-8 mb-5 gap-6 '>
 			<div className='flex-1 flex bg-[#2a2b33] rounded-md items-center gap-5 pr-5 '>
@@ -52,9 +59,10 @@ const MessageBar = () => {
 					value={message}
 					onChange={(e) => setMessage(e.target.value)}
 				/>
-				<button className='text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-400 transition-all'>
+				<button className='text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-400 transition-all' onClick={handledAttachmentClick}>
 					<GrAttachment />
 				</button>
+				<input type="file" className="hidden" ref={fileInputRef}  />
 				<div className='relative'>
 					<button
 						className='text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-400 transition-all'
