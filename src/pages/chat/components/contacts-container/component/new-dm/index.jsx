@@ -27,7 +27,7 @@ const NewDM = () => {
 	const [searchedContact, setSearchedContact] = useState([]);
 
 	const selectNewContact = (contact) => {
-		console.log("contact",contact)
+		console.log("in selectNewContact:",contact)
 		setopneNewContactModal(false);
 		setSelectedChatType("contact");
 		setSelectedChatData(contact);
@@ -137,7 +137,7 @@ const NewDM = () => {
 					)}
 
 					{searchedContact.length <= 0 && (
-						<div className=''>
+						<div>
 							<div className='flex-1 mt-5 md:flex flex-col justify-center items-center duration-1000 transition-all '>
 								<Lottie
 									isClickToPauseDisabled={true}

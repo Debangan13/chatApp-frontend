@@ -10,21 +10,22 @@ export const useSocket = () => {
 	return useContext(SocketContext);
 };
 
-export const SocketProvider = ({ children }) => {
-	console.log("in Scoketprovider");
+export const SocketProvider = ({ children }) => {	
 	const socket = useRef();
 	const { userInfo } = useAppStore();
-	useEffect(() => {
-		console.log("in useEffect");
+	useEffect(() => {		
 		if (userInfo) {
+			console.log("in useEffect")
+			console.log(userInfo)
+			const userId = userInfo._id || userInfo.id;
 			socket.current = io(HOST, {
 				withCredentials: true,
-				query: { userId: userInfo.id },
+				query: { userId: userId },
 			});
 			socket.current.on("connect", () => {
 				console.log("connected to socket server");
 			});
-			const handleRecieveMessage = (message) => {
+			const handleRecieveMessage = (message) => {				
 				const {selectedChatData, selectedChatType, addMessage } = useAppStore.getState()
 				if (
 					selectedChatType !== undefined &&
